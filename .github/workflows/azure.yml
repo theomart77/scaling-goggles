@@ -12,14 +12,15 @@
 #
 # For more information on GitHub Actions for Azure, refer to https://github.com/Azure/Actions
 # For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
-on:
-  release:
+on:run
+  release: clone 
     types: [created]
 
 env:
-  AZURE_WEBAPP_NAME: your-app-name    # set this to your application's name
+  AZURE_WEBAPP_NAME: scaling-goggles  # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '10.x'                # set this to the node version to use
+  MY_API_ID: '9f419b27-40a4-4494-a81c-3c57d649c605'   # <-- Added API ID as env variable
 
 jobs:
   build-and-deploy:
@@ -38,6 +39,8 @@ jobs:
         npm install
         npm run build --if-present
         npm run test --if-present
+      env:
+        MY_API_ID: ${{ env.MY_API_ID }}   # <-- Pass API ID to npm scripts if needed
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
       with:
